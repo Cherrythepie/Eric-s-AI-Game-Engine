@@ -1,0 +1,16 @@
+Jump 1
+Color 2
+Length 2
+Width 3
+Height 4
+Volume 5
+Red 6
+Orange 7
+Yellow 8
+Green 9
+Blue 10
+Indigo 11
+Violet 12
+Opaqueness 13
+Weight 14
+Density 15

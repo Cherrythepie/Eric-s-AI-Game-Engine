@@ -1,0 +1,3 @@
+Item Length * Width !< Contains: Length * Width;
+Item If Length & Width & Height exist -> Volume = Length * Width * Height;
+

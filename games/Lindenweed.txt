@@ -1,0 +1,6 @@
+Maps: MapFolder/Maps.txt
+Attributes: AttributeFolder/Attributes.txt
+Items: ItemFolder/Items.txt
+Characters: CharacterFolder/Characters.txt
+Properties: Properties/Properties.txt
+end

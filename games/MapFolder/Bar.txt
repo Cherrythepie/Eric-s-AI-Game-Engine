@@ -1,0 +1,23 @@
+3
+3
+[(1,50),(2,75),(5,62)];[];[(*1),(*2)];
+[(c1)];[];[];
+[];[];[(L>^V<, Lounge(0,0)2)];
+
+
+
+"L" means "Link". Link does what Jump was supposed to do.->
+-> It links to a new map. The position of the arrow denotes ->
+-> what direction(s) the player must go in order to use the ->
+-> link.
+
+Directions:
+">" = East.
+"^" = North.
+"v" = South.
+"<" = West.
+
+Syntax for a Jump (Link):
+(L<Direction(s)>, <MapName(<X>,<Y>)<one-way(1) or two-way(2)>;
+
+

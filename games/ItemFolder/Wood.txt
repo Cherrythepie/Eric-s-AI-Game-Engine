@@ -1,0 +1,3 @@
+Color = Black;
+Length = 5 feet;
+Volume = 4 m3;

@@ -1,0 +1,25 @@
+Name = Shovel;
+ID = 1;
+Color = Red;
+Length = 15 feet;
+Width = 5 meters;
+Density = 72 lbs/m3;
+Area_Constant;
+Volume = 3 m3;
+Contains:
+{
+NOT_UNIQUE;
+50 Wood: Color = Yellow, Color = Blue;
+Metal: Color = Gray, Hardness = 8/10;
+Flower: Color = Green,->
+Contains:
+{
+Table: Color = Brown,->
+Contains:
+{
+Glass: Opaqueness = 0/10, weight = 10 lbs, Volume = 2 m3;
+};
+};
+Weight = 90 lbs;
+};
+

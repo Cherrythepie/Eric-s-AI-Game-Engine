@@ -1,0 +1,27 @@
+X
+Y
+[] = Tile.
+() = Contains something about the tile -> [()].
+(1,50) -> 1 = Item ID -> "," denotes changing from ID to Amount ->
+-> 50 = Amount of Item ID "1."
+
+[*1,*2]; -> "*1" = Attribute ID "1" -> "," = next attribute or ->
+item -> "*2" = Attribute ID "2" -> ";" = end of Tile info.
+=================
+"L" means "Link". Link does what Jump was supposed to do.->
+-> It links to a new map. The position of the arrow denotes ->
+-> what direction(s) the player must go in order to use the ->
+-> link.
+
+Directions:
+">" = East.
+"^" = North.
+"v" = South.
+"<" = West.
+
+Syntax for a Jump:
+(*L<Direction(s)>, <MapName(<X coord>,<Y coord>)>;
+================
+
+
+

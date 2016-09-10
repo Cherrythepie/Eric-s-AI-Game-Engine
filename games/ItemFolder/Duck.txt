@@ -1,0 +1,5 @@
+Name = Duck;
+ID = 2;
+Color = Black;
+Color = White;
+Volume = 5 m3;

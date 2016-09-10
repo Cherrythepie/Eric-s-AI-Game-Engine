@@ -1,0 +1,23 @@
+-Need to know Length & Width.
+-Need to know where items are on the map.
+-Need to know how much of an item is on a tile.
+-Need to know where structures (jump points) are on the map.
+-Need to know where jump points are on the map.
+-Need to know where characters are on the map.
+
+=====
+compressed:
+---------
+
+-Need to know where item/character IDs should go on the map, 
+and how much of that item.
+
+-Need to place special characters on the map for things like
+jumping to a new map or performing a special function.
+
+
+
+
+
+
+
