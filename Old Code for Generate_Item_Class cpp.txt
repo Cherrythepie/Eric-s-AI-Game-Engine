@@ -1,0 +1,574 @@
+#include "GenerateItemClass.h"
+
+// THE ATTRIBUTES, NO QUESTION, HAVE TO BE BUILT (OR ALMOST FULLY BUILT) BEFORE THE ITEMS ARE BUILT. IT WILL TAKE SOME GOOD CODING TO REBUILD THE ATTRIBUTES IN THE ITEMS OTHERWISE.
+
+void GetName(char charBuffer[], char name[], int charBufferIndex);
+bool IfAttExists(char attributeName[], AttributeType *AttributeLL);	// checks if the attribute exists.
+bool IfItemExists(char itemName[], ItemType *ItemLL);	// checks if the item exists.
+AttributeType* CreateNewAttributeType(AttributeType *CurrentAttribute);
+AttributeType* CreateNewBlankAttributeType();
+
+void ThatFunctionThatBuildsAnItemsAttributes(ItemType		*Item, 
+											 ItemType		*ItemLL,
+										     ItemType		*ItemsToBuild,
+										     AttributeType  *AttributeLL,
+										     AttributeType  *AttributesToBuild,
+										     ifstream		&ActualItemFile,
+											 char			charBuffer[],
+											 int			charBufferIndex,
+											 char			itemName[],
+											 char			attributeName[],
+											 char			attributeValue[])
+
+void PlaceNewAttribute(AttributeType *CurrentItemAttribute, AttributeType *CurrentAttribute);
+bool IfSpecialAttribute(char attributeName[]);
+void MoveCharBufferIndexToNewData(char charBuffer[], int &charBufferIndex);
+
+void GenerateItemClass::SetupItemAttributes(ItemType		*Item, 
+										   ItemType			*ItemLL,
+										   ItemType			*ItemsToBuild,
+										   AttributeType	*AttributeLL,
+										   AttributeType	*AttributesToBuild,
+										   ifstream			&ActualItemFile)
+{
+	char charBuffer[2501] = {0};
+	int  charBufferIndex = 0;
+
+	AttributeType *CurrentItemAttribute = NULL;
+
+	while(!ActualItemFile.eof())
+	{
+		ActualItemFile.getline(charBuffer, 2500);
+
+		char attributeName[251] = {0};
+		char itemName[251] = {0};
+
+		GetName(charBuffer, attributeName, charBufferIndex);
+
+		if(IfSpecialAttribute(attributeName))	// if at the end of the file's data that we want to read in... in this function.
+			return;
+		
+		AttributeType *CurrentAttribute = AttributeLL;	// CurrentAttribute points to the Attribute LL
+
+		if(IfAttExists(attributeName, CurrentAttribute) )	// If the attribute name exists in the Attribute LL.
+		{
+			AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute);	// create a semi-blank attribute with some values (name, amount) from the original.
+
+			if(Item->ToAttribute == NULL)	// if the item contains no attributes
+			{
+				// link up the new attribute with the item.
+				Item->ToAttribute = newAttribute;	// This new attribute is already built.
+				newAttribute->ToItem = Item;
+
+				CurrentItemAttribute = newAttribute;
+
+				PlaceNewAttribute(CurrentItemAttribute, CurrentAttribute);
+
+				//continue;	// go to the next "line" in the Item's file.
+			}
+			else	// if the item contains attributes.
+			{
+				CurrentItemAttribute->next = newAttribute;
+				newAttribute->previous = CurrentItemAttribute;
+
+				CurrentItemAttribute = newAttribute;
+
+				PlaceNewAttribute(CurrentItemAttribute, CurrentAttribute);
+				//continue;
+			}
+
+		}
+		else	// If the attribute name does not exist in the Attribute LL.
+		{
+			// make a blank copy of the attribute and stick it in anyway. It will be built/finished later.
+			AttributeType *newAttribute = new(AttributeType);
+
+			strcpy(newAttribute->AttributeName, attributeName);
+			newAttribute->AttributeID = 0;
+			newAttribute->AttributeAmount = 0;
+
+			newAttribute->ToCharacter = NULL;
+			newAttribute->ToAttribute = NULL;
+			newAttribute->ToMap = NULL;
+			newAttribute->next = newAttribute->previous = NULL;
+
+			if(Item->ToAttribute == NULL)	// if the item contains no attributes
+			{
+				// (doubly) link up the item and the attribute
+				Item->ToAttribute = newAttribute;
+				newAttribute->ToItem = Item;
+
+				CurrentItemAttribute = newAttribute;
+				//continue;
+			}
+			else	// if the item does contain attributes.
+			{
+				CurrentItemAttribute->next = newAttribute;
+				newAttribute->previous = CurrentItemAttribute;
+
+				CurrentItemAttribute = newAttribute;
+				//continue;
+			}
+
+		}
+
+		if(charBuffer[charBufferIndex] == ' ')	// like x = y
+		{
+			charBufferIndex += 1;
+
+XEQY:		if(charBuffer[charBufferIndex] == '=')	// like x=y too (from 2 after this one on top ^ and in the same indention column).
+			{
+				MoveCharBufferIndexToNewData(charBuffer, charBufferIndex);	// moves charBufferIndex to the next number or character.
+
+				GetName(charBuffer, itemName, charBufferIndex);	// get the next attribute name. I know, I should probably change "itemName" to something more descriptive.
+
+				AttributeType *newAttribute = CreateNewBlankAttributeType();
+				AttributeType *CurrentItemAttributeToAttribute = CreateNewBlankAttributeType();
+
+				int UnitAmount = 0;
+
+				if(isdigit(itemName[0]) )	// if a unit
+				{
+					UnitAmount = atoi(itemName);
+					charBufferIndex += 1;	// move charBufferIndex up to the unit type (feet, lbs, seconds);
+
+					GetName(charBuffer, itemName, charBufferIndex);	// get the unit type.
+				}
+
+				newAttribute->AttributeAmount = UnitAmount;
+
+				if(CurrentItemAttribute->ToAttribute != NULL)	// self explanatory
+				{
+					CurrentItemAttributeToAttribute = CurrentItemAttribute->ToAttribute;	// self explanatory
+
+					while(CurrentItemAttributeToAttribute->next != NULL)	// go to the end of Item's Attribute's ToAttribute's LL
+						CurrentItemAttributeToAttribute = CurrentItemAttributeToAttribute->next;
+							
+					CurrentItemAttributeToAttribute->next = newAttribute;
+					newAttribute->previous = CurrentItemAttributeToAttribute;
+						
+					strcpy(newAttribute->AttributeName, itemName);
+					
+				}
+				else
+				{
+					strcpy(newAttribute->AttributeName, itemName);
+					CurrentItemAttribute->ToAttribute = newAttribute;
+					newAttribute->previous = CurrentItemAttribute;
+				}
+
+			}
+			else
+			{
+				// do stuff;
+			}
+		}
+
+		if(charBuffer[charBufferIndex] == '=')	// like x=y
+		{
+			goto XEQY;
+		}
+
+
+
+	}
+}
+
+void GenerateItemClass::SetupItemItems	  (ItemType			*Item, 
+										   ItemType			*ItemLL,
+										   ItemType			*ItemsToBuild,
+										   AttributeType	*AttributeLL,
+										   AttributeType	*AttributesToBuild,
+										   ifstream			&ActualItemFile)
+{
+
+	char charBuffer[2501] = {0};
+	int  charBufferIndex = 0;
+
+	AttributeType *CurrentItemAttribute = NULL;
+
+	while(!ActualItemFile.eof())
+	{		
+		char specialAttributeName[251] = {0};	//	Contains:
+		char itemName[251] = {0};				//	Wood:
+		char attributeName[251] = {0};			//	Wood: attributeName
+		char attributeValue[251] = {0};			//	Wood: attributeName = attributeValue(,)(;)
+
+		if(charBuffer[charBufferIndex] == ';')	// like "Area_Constant"
+		{
+			// do stuff
+		}
+
+		if(charBuffer[charBufferIndex] == ':')	// like "Contains"
+		{
+			if(strcmp(attributeName, "Contains") )
+			{
+				char AllContents[10001] = {0};
+				strcat(AllContents, charBuffer);
+
+				int numOpenCurlyBrace = 1, numClosedCurlyBrace = 0;
+				ActualItemFile.getline(charBuffer, 2500);	// get the firt '{'
+				strcat(AllContents, charBuffer);
+
+				while(numOpenCurlyBrace != numClosedCurlyBrace)
+				{
+					ActualItemFile.getline(charBuffer, 2500);
+					
+					strcat(AllContents, charBuffer);
+
+					if(charBuffer[0] == '{')
+						numOpenCurlyBrace += 1;
+
+					if(charBuffer[0] == '}')
+						numClosedCurlyBrace += 1;
+
+				}
+			}
+		}
+
+		if(charBuffer[charBufferIndex] == '=')	// like x=y
+		{
+			// do stuff
+		}
+
+
+	}
+}
+
+void GetName(char charBuffer[], char name[], int charBufferIndex)
+{
+	int nameIndex = 0;
+	while(isalnum(charBuffer[charBufferIndex]) || charBuffer[charBufferIndex] == '.') //charBuffer[charBufferIndex] != ' ' || charBuffer[charBufferIndex] != ';' || charBuffer[charBufferIndex] != ':'|| charBuffer[charBufferIndex] != ',')
+	{
+		name[nameIndex] = charBuffer[charBufferIndex];
+
+		nameIndex++;
+		charBufferIndex++;
+	}
+}
+
+bool IfSpecialAttribute(char attributeName[])
+{
+	if(strcmp(attributeName, "Name") == 0)
+		return true;
+	
+	if(strcmp(attributeName, "ID") == 0)
+		return true;
+
+	if(strcmp(attributeName, "Area_Constant") == 0)
+		return true;
+
+	if(strcmp(attributeName, "Contains") == 0)
+		return true;
+
+	if(strcmp(attributeName, "Properites") == 0)
+		return true;
+
+	if(strcmp(attributeName, "Components") == 0)
+		return true;
+
+	if(strcmp(attributeName, "Reactions") == 0)
+		return true;
+
+}
+
+bool IfAttExists(char attributeName[], AttributeType *AttributeLL)
+{
+	AttributeType *CurrentAttribute = AttributeLL;
+
+	while(CurrentAttribute != NULL)
+	{
+		if(strcmp(CurrentAttribute->AttributeName, attributeName) == 0)
+		{
+			return true;
+		}
+		
+		CurrentAttribute = CurrentAttribute->next;
+	}
+
+	return false;
+}
+
+bool IfItemExists(char itemName[], ItemType *ItemLL)
+{
+	ItemType *CurrentItem = ItemLL;
+
+	while(CurrentItem != NULL)
+	{
+		if(strcmp(CurrentItem->ItemName, itemName) == 0)
+		{
+			return true;
+		}
+		
+		CurrentItem = CurrentItem->next;
+	}
+
+	return false;
+}
+
+AttributeType* CreateNewAttributeType(AttributeType *CurrentAttribute)
+{
+	AttributeType *newAttribute = new(AttributeType);
+
+	strcpy(newAttribute->AttributeName, CurrentAttribute->AttributeName);
+	newAttribute->AttributeID = CurrentAttribute->AttributeID;
+	newAttribute->AttributeAmount = 0;
+
+	newAttribute->ToCharacter = NULL;
+	newAttribute->ToAttribute = NULL;
+	newAttribute->ToMap = NULL;
+	newAttribute->next = newAttribute->previous = NULL;
+
+	return newAttribute;
+}
+
+AttributeType* CreateNewBlankAttributeType()
+{
+	AttributeType *newAttribute = new(AttributeType);
+
+	strcpy(newAttribute->AttributeName, " ");
+	newAttribute->AttributeID = 0;
+	newAttribute->AttributeAmount = 0;
+
+	newAttribute->ToCharacter = NULL;
+	newAttribute->ToAttribute = NULL;
+	newAttribute->ToMap = NULL;
+	newAttribute->next = newAttribute->previous = NULL;
+
+	return newAttribute;
+}
+
+void ThatFunctionThatBuildsAnItemsAttributes(ItemType *Item,	// the actual item that is being built.
+											 ItemType *ItemLL,	// the item linked list
+										     ItemType *ItemsToBuild,	// this is not needed anymore
+										     AttributeType *AttributeLL,	// the attribute linked list
+										     AttributeType *AttributesToBuild,	// this is not needed anymore
+										     ifstream &ActualItemFile,	// the actual data file.
+											 char charBuffer[],	// holds all the input data
+											 int charBufferIndex,	// keeps track of which character the program is looking at in charBuffer.
+											 char itemName[],		// The name of the Item structure
+											 char attributeName[],	// the name of the first attribute after the item, like color or density
+											 char attributeValue[])	// the value of the attribute, like red or 72 lbs/m3.
+{
+		AttributeType *CurrentItemAttribute = NULL;
+
+		//if(IfSpecialAttribute(attributeName))	// if at the end of the file's data that we want to read in... in this function.
+		//	return;
+		
+		AttributeType *CurrentAttribute = AttributeLL;	// CurrentAttribute points to the Attribute LL
+
+		if(IfAttExists(attributeName, CurrentAttribute) )	// If the attribute name exists in the Attribute LL.
+		{
+			AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute);	// create a semi-blank attribute with some values (name, amount) from the original.
+
+			if(Item->ToAttribute == NULL)	// if the item contains no attributes
+			{
+				// link up the new attribute with the item.
+				Item->ToAttribute = newAttribute;	// This new attribute is already built.
+				newAttribute->ToItem = Item;
+
+				CurrentItemAttribute = newAttribute;
+
+				PlaceNewAttribute(CurrentItemAttribute, CurrentAttribute);
+
+				//continue;	// go to the next "line" in the Item's file.
+			}
+			else	// if the item contains attributes.
+			{
+				CurrentItemAttribute->next = newAttribute;
+				newAttribute->previous = CurrentItemAttribute;
+
+				CurrentItemAttribute = newAttribute;
+
+				PlaceNewAttribute(CurrentItemAttribute, CurrentAttribute);
+				//continue;
+			}
+
+		}
+		else	// If the attribute name does not exist in the Attribute LL.
+		{
+			// make a blank copy of the attribute and stick it in anyway. It will be built/finished later.
+			AttributeType *newAttribute = new(AttributeType);
+
+			strcpy(newAttribute->AttributeName, attributeName);
+			newAttribute->AttributeID = 0;
+			newAttribute->AttributeAmount = 0;
+
+			newAttribute->ToCharacter = NULL;
+			newAttribute->ToAttribute = NULL;
+			newAttribute->ToMap = NULL;
+			newAttribute->next = newAttribute->previous = NULL;
+
+			if(Item->ToAttribute == NULL)	// if the item contains no attributes
+			{
+				// (doubly) link up the item and the attribute
+				Item->ToAttribute = newAttribute;
+				newAttribute->ToItem = Item;
+
+				CurrentItemAttribute = newAttribute;
+				//continue;
+			}
+			else	// if the item does contain attributes.
+			{
+				CurrentItemAttribute->next = newAttribute;
+				newAttribute->previous = CurrentItemAttribute;
+
+				CurrentItemAttribute = newAttribute;
+				//continue;
+			}
+
+		}
+
+		if(charBuffer[charBufferIndex] == ' ')	// like x = y
+		{
+			charBufferIndex += 1;
+
+XEQY:		if(charBuffer[charBufferIndex] == '=')	// like x=y too (from 2 after this one on top ^ and in the same indention column).
+			{
+				MoveCharBufferIndexToNewData(charBuffer, charBufferIndex);	// moves charBufferIndex to the next number or character.
+
+				GetName(charBuffer, itemName, charBufferIndex);	// get the next attribute name. I know, I should probably change "itemName" to something more descriptive.
+
+				AttributeType *newAttribute = CreateNewBlankAttributeType();
+				AttributeType *CurrentItemAttributeToAttribute = CreateNewBlankAttributeType();
+
+				int UnitAmount = 0;
+
+				if(isdigit(itemName[0]) )	// if a unit
+				{
+					UnitAmount = atoi(itemName);
+					charBufferIndex += 1;	// move charBufferIndex up to the unit type (feet, lbs, seconds);
+
+					GetName(charBuffer, itemName, charBufferIndex);	// get the unit type.
+				}
+
+				newAttribute->AttributeAmount = UnitAmount;
+
+				if(CurrentItemAttribute->ToAttribute != NULL)	// self explanatory
+				{
+					CurrentItemAttributeToAttribute = CurrentItemAttribute->ToAttribute;	// self explanatory
+
+					while(CurrentItemAttributeToAttribute->next != NULL)	// go to the end of Item's Attribute's ToAttribute's LL
+						CurrentItemAttributeToAttribute = CurrentItemAttributeToAttribute->next;
+							
+					CurrentItemAttributeToAttribute->next = newAttribute;
+					newAttribute->previous = CurrentItemAttributeToAttribute;
+						
+					strcpy(newAttribute->AttributeName, itemName);
+					
+				}
+				else
+				{
+					strcpy(newAttribute->AttributeName, itemName);
+					CurrentItemAttribute->ToAttribute = newAttribute;
+					newAttribute->previous = CurrentItemAttribute;
+				}
+
+			}
+			else
+			{
+				// do stuff;
+			}
+		}
+
+		if(charBuffer[charBufferIndex] == '=')	// like x=y
+		{
+			goto XEQY;
+		}
+}
+
+void PlaceNewAttribute(AttributeType *CurrentItemAttribute, AttributeType *CurrentAttribute)	// Places the (so-to-speak) "next" (or "ToAttribute" ;) ) attribute
+{
+	if(CurrentAttribute->ToAttribute != NULL)	// if the attribute in the Attribute LL has attributes that belong to itself (like how purple contains two colors, red and blue).
+	{
+		AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute->ToAttribute);
+
+		// link up the pointers.
+		CurrentItemAttribute->ToAttribute = newAttribute;
+		newAttribute->previous = CurrentItemAttribute;
+
+		PlaceNewAttribute(CurrentItemAttribute->ToAttribute, CurrentAttribute->ToAttribute);
+	}
+
+	if(CurrentAttribute->next != NULL)	// if not at the end of the attributeLL
+	{
+		AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute->next);
+
+		// link up the pointers.
+		CurrentItemAttribute->next = newAttribute;
+		newAttribute->previous = CurrentItemAttribute;
+
+		PlaceNewAttribute(CurrentItemAttribute->next, CurrentAttribute->next);
+	}
+}
+
+void PlaceNewItem(ItemType *Item, ItemType *ItemLL, AttributeType *AttributeLL, ifstream &ActualItemFile)	// for "contains" and it can probably be for "components".
+{
+	char charBuffer[2501] = {0};
+	int  charBufferIndex = 0;
+	
+	char specialAttributeName[251] = {0};	//	Contains:
+	char itemName[251] = {0};				//	Wood:
+	char attributeName[251] = {0};			//	Wood: attributeName
+	char attributeValue[251] = {0};			//	Wood: attributeName = attributeValue(,)(;)
+
+	ActualItemFile.getline(itemName, 250);	// remove the '{' after "Contains:".
+
+	ActualItemFile.getline(charBuffer, 2500);	// get the line that follows.
+
+	GetName(charBuffer, itemName, charBufferIndex);
+
+	if(charBuffer[charBufferIndex] == ':')
+	{
+		MoveCharBufferIndexToNewData(charBuffer, charBufferIndex);	// move charBufferIndex to the first attribute;
+
+		ItemType *newItem = new(ItemType);	// create a new item;
+
+		if(IfItemExists(itemName, ItemLL))
+		{
+
+		}
+
+		
+	}
+
+	if(charBuffer[charBufferIndex] == ';')
+	{
+		// do stuff
+	}
+}
+
+void MoveCharBufferIndexToNewData(char charBuffer[], int &charBufferIndex)
+{
+	while(! isalnum(charBuffer[charBufferIndex]) )	// moves charBufferIndex to the next number or character.
+		charBufferIndex++;
+}
+
+
+
+
+
+//void PlaceNewAttribute(AttributeType *CurrentItemAttribute, AttributeType *CurrentAttribute)
+//{
+//	if(CurrentAttribute->ToAttribute != NULL)	// if the attribute in the Attribute LL has things like colors.
+//	{
+//		AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute->ToAttribute);
+//
+//		// link up the pointers.
+//		CurrentItemAttribute->ToAttribute = newAttribute;
+//		newAttribute->previous = CurrentItemAttribute;
+//
+//		PlaceNewAttribute(CurrentItemAttribute->ToAttribute, CurrentAttribute->ToAttribute);
+//	}
+//
+//	if(CurrentAttribute->next != NULL)	// if not at the end of the attributeLL
+//	{
+//		AttributeType *newAttribute = CreateNewAttributeType(CurrentAttribute->next);
+//
+//		// link up the pointers.
+//		CurrentItemAttribute->next = newAttribute;
+//		newAttribute->previous = CurrentItemAttribute;
+//
+//		PlaceNewAttribute(CurrentItemAttribute->next, CurrentAttribute->next);
+//	}
+//}

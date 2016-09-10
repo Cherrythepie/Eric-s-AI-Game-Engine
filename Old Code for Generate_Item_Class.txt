@@ -1,0 +1,47 @@
+		//ActualItemFile.getline(charBuffer, 2500);
+
+		//char attributeName[201] = {0};
+		//char itemName[201] = {0};
+
+		//GetName(charBuffer, attributeName, charBufferIndex);
+
+		//AttributeType *CurrentAttributeLL = AttributeLL->next;	// set currentAtt to the first attribute in the LL.
+		//AttributeType *CurrentAttributeItem = Item->ToAttribute;
+
+		//// Move the pointer to the end of the "Item's" LL.
+		//if(CurrentAttributeItem != NULL)	// if "Item" has attributes at the moment.
+		//{
+		//	while(CurrentAttributeItem->next != NULL)	// test if at the end of the Item's attribute LL.
+		//		CurrentAttributeItem = CurrentAttributeItem->next;	// move the pointer up one.
+		//}
+
+		//// This copies the attribute to the "Item."
+		//// This does the bare minimum atm. It needs a lot of work to root out bugs and obvious problems. But it works for the time being.
+		//while(CurrentAttributeLL != NULL)	// while not at the end of the attribute LL.
+		//{
+		//	if( strcmp( attributeName, CurrentAttributeLL->AttributeName) == 0 )	// if the attribute exists
+		//	{
+		//		AttributeType *newAttribute = new(AttributeType);
+
+		//		if(CurrentAttributeItem == NULL)	// if "Item" has no attributes at the moment.
+		//		{
+		//			Item->ToAttribute = newAttribute;	// set the first attribute of the "Item's" LL.
+		//			break;
+		//		}
+		//		else	// if "Item" has attributes.
+		//		{
+		//			CurrentAttributeItem->next = newAttribute;	// set the next attribute of the "Item's" LL.
+		//		}
+		//	}
+		//	// V Still under construction V.
+		//	//else	// if the attribute does not exist (yet?).
+		//	//{
+		//	//	AttributeType *newAttribute = new(AttributeType);
+
+		//	//	Item->ToAttribute = newAttribute;
+		//	//}
+
+		//	CurrentAttributeLL = CurrentAttributeLL->next;	// move the pointer up the LL.
+		//}
+
+

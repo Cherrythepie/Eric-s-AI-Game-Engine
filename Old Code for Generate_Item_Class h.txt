@@ -1,0 +1,38 @@
+// Builds the Items
+
+#ifndef GENERATEITEM_H
+#define GENERATEITEM_H
+
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <cctype>
+#include <cmath>
+#include <math.h>
+
+#include "Implementation.h"
+#include "StructureCopyingClass.h"
+
+using namespace std;
+
+class GenerateItemClass
+{
+private:
+
+public:
+//			GenerateItemClass();
+void SetupItemAttributes(ItemType *Item, ItemType *ItemLL, ItemType *ItemsToBuild, AttributeType *AttributeLL, AttributeType *AttributesToBuild, ifstream &ActualItemFile);
+void SetupItemItems		(ItemType *Item, ItemType *ItemLL, ItemType *ItemsToBuild, AttributeType *AttributeLL, AttributeType *AttributesToBuild, ifstream &ActualItemFile);
+void SetupAttribute		(ItemType *Item, ItemType *ItemLL, AttributeType *AttributeLL, ifstream &ActualItemFile);
+void SetupCharacter		(ItemType *Item, ItemType *ItemLL, AttributeType *AttributeLL, ifstream &ActualItemFile);
+
+
+
+
+};
+
+
+
+
+#endif;

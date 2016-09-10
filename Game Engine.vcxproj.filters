@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Compress &amp;&amp; encrypt">
+      <UniqueIdentifier>{96878717-041d-4f66-9c97-36463ff210b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Maps">
+      <UniqueIdentifier>{40b8bcec-f77d-4c88-b667-3fe8d5870015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Items">
+      <UniqueIdentifier>{c6f35eac-aa03-4bd2-b508-3985745287ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Attributes">
+      <UniqueIdentifier>{d70e6cf5-3ee8-47db-a946-649ae9b2a634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{0cfa9de5-f46c-44db-b515-65e64f409827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Structure Copy-er">
+      <UniqueIdentifier>{d2ad2cb9-2f10-4dc8-a6ae-67693a3be18d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Driver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C_E_E.cpp">
+      <Filter>Source Files\Compress &amp;&amp; encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="MapClass.cpp">
+      <Filter>Source Files\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateMap.cpp">
+      <Filter>Source Files\Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemClass.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeClass.cpp">
+      <Filter>Source Files\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterClass.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateItemClass.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="StructureCopyingClass.cpp">
+      <Filter>Source Files\Structure Copy-er</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateAttributeClass.cpp">
+      <Filter>Source Files\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateCharacterClass.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Implementation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C_E_E.h">
+      <Filter>Source Files\Compress &amp;&amp; encrypt</Filter>
+    </ClInclude>
+    <ClInclude Include="MapClass.h">
+      <Filter>Source Files\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateMap.h">
+      <Filter>Source Files\Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemClass.h">
+      <Filter>Source Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeClass.h">
+      <Filter>Source Files\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="Engineering log.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterClass.h">
+      <Filter>Source Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateItemClass.h">
+      <Filter>Source Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="StructureCopyingClass.h">
+      <Filter>Source Files\Structure Copy-er</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateAttributeClass.h">
+      <Filter>Source Files\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateCharacterClass.h">
+      <Filter>Source Files\Characters</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
